@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PushL Notification Test</title>
+</head>
+<body>
+  <h1>Push通知テスト</h1>
+
+  <!-- TESTボタン -->
+  <button id="test-push">TEST</button>
+
+  <!-- サブスクリプションUIを表示する場所 -->
+  <div id="subscription-area"></div>
+
+  <!-- PushL script -->
+  <script defer id="pushlScript" src="https://cdn.pushl.info/sites/1.1/js/pushl-subscription.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      PushL.init({
+        subscriptionAreaId: "subscription-area",
+        disableFloating: false,
+        maxFontSize: "18px",
+        modalTtl: "通知を設定",
+        subscriptionBtnTxt: "通知を設定する",
+        subscriptionReasonTtl: 'プッシュ通知で応募情報を受け取ろう',
+        subscriptionReasonTxt: 'プッシュ通知をオンにすると<br>最新情報のお知らせが届きます',
+        categorySelectionTtl: "＜情報を欲しいカテゴリを選択＞",
+        subscriptionInfo: {},
+        logoUrl: "https://pushl.info/img/brand/logo-main.svg",
+        logoWidth: "154px",
+        logoHeight: "30px",
+        siteNameJP: "kamichita",
+        siteName: "kamichita-f5-si",
+        swScope: "/",
+        backgroundcolor: "#003d7f",
+        foregroundColor: "#fff",
+        cssLocation: ""
+      });
+
+      // TESTボタンで許可ポップアップ表示
+      document.getElementById('test-push').addEventListener('click', function () {
+        // 通知の権限がまだ聞かれてない場合に許可リクエストを出す
+        if (Notification.permission === 'default') {
+          PushL.requestNotificationPermission();
+        } else {
+          alert("通知許可状態: " + Notification.permission);
+        }
+      });
+    });
+  </script>
+
+  <!-- Service worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function (err) {
+          console.log('Service Worker registration failed: ' + err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
